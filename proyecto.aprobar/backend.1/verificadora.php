@@ -3,6 +3,43 @@
 
     class Verificadora
     {
+        public function AltaRegistro($request,$response)
+        {
+            $parametros=$request->getParsedBody();
+            $nombre=$parametros['nombre'];
+            $clave=$parametros['clave'];
+            $mail=$parametros['mail'];
+            $perfil=$parametros['perfil'];
+            $legajo=$parametros['legajo'];
+
+            $destino = "./fotos/usuarios/" . $mail . "-" . $legajo . ".jpg";
+
+            try
+            {
+                $usuario='root';
+                $pass='';
+                $objetoPDO = new PDO('mysql:host=localhost;dbname=cdcol;charset=utf8', $usuario, $pass);
+                $sql=$objetoPDO->prepare('INSERT INTO `clientes`(`nombre`, `clave`, `mail`, `perfil`,`legajo`,`foto`) VALUES (:nombre, :clave, :mail, :perfil, :legajo, :foto)');
+                
+                $sql->execute(array(
+                    'nombre' => $nombre,
+                    'clave' => $clave,
+                    'mail' => $mail,
+                    'perfil' => $perfil,
+                    'legajo' => $legajo,
+                    'foto' => $destino
+                ));
+                
+                move_uploaded_file($_FILES["foto"]["tmp_name"], $destino);
+                
+                return $response->withJson(array(["destino"=>$destino]));
+            }
+            catch(PDOException $e) 
+            {
+                return $response->withJson(array(["error"=>$e->getMessage()]));
+            }
+        }
+
         public function VerificarUsuario($request,$response,$next)
         {
             if($request->isGet())
@@ -140,6 +177,44 @@
                 rename($origen,$destino);
                 
                 return $response->withJson(array(["destino"=>$destino]));
+            }
+            catch(PDOException $e) 
+            {
+                return $response->withJson(array(["error"=>$e->getMessage()]));
+            }
+        }
+
+        public static function ModificarCd($request,$response)
+        {
+            $parametros=$request->getParsedBody();
+            
+            $id=$parametros['id'];
+            $titulo=$parametros['titulo'];
+            $interprete=$parametros['interprete'];
+            $anio=$parametros['anio'];
+            //$origen=$parametros['foto'];
+
+            //$destino = "./fotos/modificadas/" . $titulo . "-" . $interprete . date("H").date("i").date("s"). ".jpg";
+
+            try
+            {
+                $usuario='root';
+                $pass='';
+                $objetoPDO = new PDO('mysql:host=localhost;dbname=cdcol;charset=utf8', $usuario, $pass);
+                $sql=$objetoPDO->prepare('UPDATE `discos` SET `titulo`=:titulo,`interprete`=:interprete,`anio`=:anio WHERE `id`=:id');
+                
+                $sql->execute(array(
+                    'titulo' => $titulo,
+                    'interprete' => $interprete,
+                    'anio' => $anio,
+                    'id' => $id
+                ));
+
+                //rename($origen,$destino);
+
+               // move_uploaded_file($_FILES["foto"]["tmp_name"], $origen);
+
+                return $response;
             }
             catch(PDOException $e) 
             {

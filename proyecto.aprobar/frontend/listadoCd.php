@@ -56,9 +56,10 @@
                     <input type="text" class="form-control" id="anio" placeholder="Anio">
                   </div>
                 </div>
-                <div class="custom-file" id="archivo">
-                  <input type="file" class="custom-file-input" id="fotoSubir" lang="es">
-                  <label class="custom-file-label" for="customFileLang"></label>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                    </div>
+                    <input type="file" class="form-control" id="inlineFormInputGroup" placeholder="Username">
                 </div>
                 <div class="form-group row justify-content-center mt-3">
                   <img src="#" alt="#" class="img-thumbnail" id="imagen">
@@ -67,8 +68,9 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-success" id="boton-agregar" onclick="Test.Manejadora.Agregar()">Cargar</button>
-                <button type="button" class="btn btn-danger" id="boton-borrar" onclick="Test.Manejadora.Borrar()" hidden=true>Borrar</button>
+                <button type="button" class="btn btn-success" id="boton-agregar" onclick="Test.Manejadora.AgregarObj()">Cargar</button>
+                <button type="button" class="btn btn-warning" id="boton-modificar" onclick="Test.Manejadora.ModificarObj()" hidden=true>Modificar</button>
+                <button type="button" class="btn btn-danger" id="boton-borrar" onclick="Test.Manejadora.BorrarObj()" hidden=true>Borrar</button>
               </div>
             </div>
           </div>

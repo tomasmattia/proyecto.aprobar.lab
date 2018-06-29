@@ -7,6 +7,38 @@ var Test;
             document.getElementById('nombre').value = "";
             document.getElementById('clave').value = "";
         };
+        Manejadora.AltaRegistro = function () {
+            var nombre = document.getElementById('nombre').value;
+            var clave = document.getElementById('clave').value;
+            var mail = document.getElementById('email').value;
+            var perfil = document.getElementById('perfil').value;
+            var legajo = document.getElementById('legajo').value;
+            var foto = document.getElementById('foto');
+            console.log(nombre, clave, mail, perfil, legajo, foto);
+            var formData = new FormData();
+            formData.append('nombre', nombre);
+            formData.append('clave', clave);
+            formData.append('mail', mail);
+            formData.append('perfil', perfil);
+            formData.append('legajo', legajo);
+            formData.append('foto', foto.files[0]);
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("POST", "../backend.1/alta/", true);
+            xmlhttp.setRequestHeader("enctype", "multipart/form-data");
+            xmlhttp.send(formData);
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    if (xmlhttp.responseText != "Registro Incompleto") {
+                        console.log(xmlhttp.responseText);
+                        // localStorage.setItem('miToken',xmlhttp.responseText);
+                        // window.location.assign('./listadoCd.php');
+                    }
+                    else {
+                        alert('Faltan datos');
+                    }
+                }
+            };
+        };
         Manejadora.Logear = function () {
             var nombre = document.getElementById('nombre').value;
             var clave = document.getElementById('clave').value;
@@ -41,7 +73,8 @@ var Test;
             document.getElementById('imagen').hidden = false;
             document.getElementById('divId').hidden = false;
             document.getElementById('boton-agregar').hidden = true;
-            document.getElementById('boton-agregar').innerText = "Modificar";
+            document.getElementById('boton-modificar').hidden = false;
+            document.getElementById('boton-borrar').hidden = true;
             console.log(objJson);
         };
         Manejadora.LimpiarForm = function () {
@@ -54,12 +87,11 @@ var Test;
             document.getElementById('titulo').readOnly = false;
             document.getElementById('interprete').readOnly = false;
             document.getElementById('anio').readOnly = false;
-            document.getElementById('archivo').hidden = false;
             document.getElementById('imagen').hidden = true;
-            document.getElementById('divId').hidden = true;
             document.getElementById('boton-agregar').hidden = false;
-            document.getElementById('boton-agregar').innerText = "Agregar";
             document.getElementById('boton-borrar').hidden = true;
+            document.getElementById('boton-modificar').hidden = true;
+            document.getElementById('divId').hidden = true;
         };
         Manejadora.Eliminar = function (objJson) {
             document.getElementById('formularioLabel').innerText = "Eliminar";
@@ -78,10 +110,11 @@ var Test;
             document.getElementById('divId').hidden = false;
             document.getElementById('boton-agregar').hidden = true;
             document.getElementById('boton-borrar').hidden = false;
+            document.getElementById('boton-modificar').hidden = true;
         };
         Manejadora.Deslogear = function () {
         };
-        Manejadora.Agregar = function () {
+        Manejadora.AgregarObj = function () {
             var titulo = document.getElementById('titulo').value;
             var interprete = document.getElementById('interprete').value;
             var anio = document.getElementById('anio').value;
@@ -107,8 +140,9 @@ var Test;
                     console.log(xmlhttp.responseText);
                 }
             };
+            location.reload();
         };
-        Manejadora.Borrar = function () {
+        Manejadora.BorrarObj = function () {
             var titulo = document.getElementById('titulo').value;
             var interprete = document.getElementById('interprete').value;
             var id = document.getElementById("id").value;
@@ -120,21 +154,41 @@ var Test;
                 window.location.href = './home.php';
                 return;
             }
-            var formData = new FormData();
-            formData.append('id', id);
-            formData.append('titulo', titulo);
-            formData.append('interprete', interprete);
-            formData.append('foto', foto);
             var xmlhttp = new XMLHttpRequest();
-            xmlhttp.open("DELETE", "../backend.1/acciones/delete/");
+            xmlhttp.open("DELETE", "../backend.1/acciones/delete");
             xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xmlhttp.setRequestHeader("miToken", miToken);
-            xmlhttp.send(formData);
+            xmlhttp.send("id=" + id + "&titulo=" + titulo + "&interprete=" + interprete + "&foto=" + foto);
             xmlhttp.onreadystatechange = function () {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                     console.log(xmlhttp.responseText);
                 }
             };
+            location.reload();
+        };
+        Manejadora.ModificarObj = function () {
+            var id = document.getElementById('id').value;
+            var titulo = document.getElementById('titulo').value;
+            var interprete = document.getElementById('interprete').value;
+            var anio = document.getElementById('anio').value;
+            var foto = document.getElementById("fotoSubir");
+            var miToken = localStorage.getItem('miToken');
+            if (miToken === null) {
+                alert("Usuario no logeado");
+                window.location.href = './home.php';
+                return;
+            }
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("PUT", "../backend.1/acciones/modify", true);
+            xmlhttp.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+            xmlhttp.setRequestHeader("miToken", miToken);
+            xmlhttp.send("id=" + id + "&titulo=" + titulo + "&interprete=" + interprete + "&anio=" + anio);
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    console.log(xmlhttp.responseText);
+                }
+            };
+            location.reload();
         };
         return Manejadora;
     }());

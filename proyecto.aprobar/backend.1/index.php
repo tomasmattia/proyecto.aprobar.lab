@@ -27,6 +27,12 @@ $app->group('/test', function (){
     })->add(\Verificadora::class.':VerificarUsuario');
 });
 
+$app->group('/alta', function (){
+    $this->post('[/]', function (Request $request, Response $response) {
+        Verificadora::AltaRegistro($request,$response);
+    });
+});
+
 $app->group('/acciones', function (){
     $this->get('/', function (Request $request, Response $response, array $args){
         $listaCds=Verificadora::TraerLosCds($request,$response);
@@ -35,8 +41,11 @@ $app->group('/acciones', function (){
     $this->post('/add', function (Request $request, Response $response, array $args){
         return Verificadora::AgregarCd($request,$response);
     });
-    $this->delete('/delete/', function (Request $request, Response $response, array $args){
+    $this->delete('/delete', function (Request $request, Response $response, array $args){
         return Verificadora::EliminarCd($request,$response);
+    });
+    $this->put('/modify', function (Request $request, Response $response, array $args){
+        return Verificadora::ModificarCd($request,$response);
     });
 })->add(\Verificadora::class.':ValidarToken');
 
