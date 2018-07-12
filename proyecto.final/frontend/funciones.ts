@@ -49,7 +49,7 @@ namespace Test
                         console.log(xmlhttp.responseText);
                         // localStorage.setItem('miToken',xmlhttp.responseText);
                         // window.location.assign('./listadoCd.php');
-                        window.location.assign('./listaEmpleados.php');
+                        window.location.assign('./home.php');
                     }
                     else
                     {
@@ -297,7 +297,53 @@ namespace Test
                         alert(xmlhttp.responseText);
                         console.log(xmlhttp.responseText);
                     }
+                }
+            }
+        }
 
+        public static EliminarEmpleado(objJson:any):any
+        {
+            console.log(objJson);
+            let id=objJson.id;
+            //let foto : any = (<HTMLInputElement> document.getElementById("fotoSubir"));
+            var txt;
+            var r = confirm("Desea borrar a "+objJson.apellido+" "+objJson.nombre);
+            if (r == false) 
+            {
+                return;
+            } 
+            let miToken=localStorage.getItem('miToken');
+
+            if(miToken===null)
+            {
+                alert("Usuario no logeado");
+                window.location.href='./home.php';
+                return;
+            }
+
+            var xmlhttp = new XMLHttpRequest();
+
+            xmlhttp.open("DELETE", "../backend.1/usuarios/", true);
+            xmlhttp.setRequestHeader("content-type","application/x-www-form-urlencoded");
+            xmlhttp.setRequestHeader("miToken",miToken);
+            xmlhttp.send("id=" + id);
+
+            xmlhttp.onreadystatechange = function () 
+            {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) 
+                {
+                    let respuestaParseada=JSON.parse(xmlhttp.responseText);
+                    if(respuestaParseada.mensaje=="todoOk")
+                    {
+                        alert(xmlhttp.responseText);
+                        location.reload();
+                        console.log(JSON.stringify(respuestaParseada));
+                    }
+                    else
+                    {
+                        alert(xmlhttp.responseText);
+                        console.log(xmlhttp.responseText);
+                    }
                 }
             }
         }

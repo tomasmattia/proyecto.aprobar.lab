@@ -219,6 +219,28 @@
             }
         }
 
+        public static function EliminarEmpleado($request,$response)
+        {
+            $parametros=$request->getParsedBody();
+            
+            $id=$parametros['id'];
+
+            try
+            {
+                $usuario='root';
+                $pass='';
+                $objetoPDO = new PDO('mysql:host=localhost;dbname=finalproglab;charset=utf8', $usuario, $pass);
+                $sql=$objetoPDO->prepare('DELETE FROM `usuarios` WHERE `id`= :id');
+                
+                $sql->execute(array('id' => $id));
+                                
+                return $response->withJson((["mensaje"=>"todoOk"]));
+            }
+            catch(PDOException $e) 
+            {
+                return $response->withJson((["error"=>$e->getMessage()]));
+            }
+        }
 
 
     }

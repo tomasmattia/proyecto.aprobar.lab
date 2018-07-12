@@ -23,7 +23,8 @@ window.onload=function():void
     xmlhttp.send();
     
     xmlhttp.onreadystatechange = function () {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) 
+        {
             let respuesta=JSON.parse(xmlhttp.responseText);
             console.log(respuesta);
             console.log(respuesta.mensaje);

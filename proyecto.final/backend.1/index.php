@@ -29,11 +29,33 @@ $app->group('/usuarios', function (){
     $this->post('/', function (Request $request, Response $response) {
         Verificadora::AltaRegistro($request,$response);
     });
+    $this->delete('/', function (Request $request, Response $response) {
+        $esPropietario=Middlewares::ValidarAccesoPropietario($request,$response);
+        if($esPropietario || $esEncargado)
+        {
+            return Verificadora::EliminarEmpleado($request,$response);
+        }
+        else
+        {
+            return $response->withJson((["mensaje"=>"sin permisos"]),200);
+        }
+    });
 });
 
 $app->get('/', function (Request $request, Response $response, array $args){
     $listaUsuarios=Verificadora::TraerLosEmpleados($request,$response);
-    return $response->withJson($listaUsuarios,200);
+    $esPropietario=Middlewares::ValidarAccesoPropietario($request,$response);
+    $data = new stdClass();
+    $data->lista=$listaUsuarios;
+    if($esPropietario)
+    {
+        $data->esAdmin=true;
+    }
+    else
+    {
+        $data->esAdmin=false;
+    }
+    return $response->withJson($data,200);
 });
 
 $app->group('/login', function (){    
